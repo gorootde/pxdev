@@ -7,13 +7,13 @@ pxauto/pxauto: LDLIBS = -lmenu -lform -lpanel -lncurses -lrt -lpixtend -lwiringP
 all: pixtend/pixtend.a pixtend/pixtend.so pixtendtool/pixtendtool pxauto/pxauto
 
 clean:
-        rm -rf pixtend/*.o pixtend/*.so pixtend/*.a pixtendtool/*.a pixtendtool/pixtendtool pxauto/pxauto pxauto/*.o
+	rm -rf pixtend/*.o pixtend/*.so pixtend/*.a pixtendtool/*.a pixtendtool/pixtendtool pxauto/pxauto pxauto/*.o
 
 %.o: %.c
-        $(CC) -c -fPIC $< -o $@
+	$(CC) -c -fPIC $< -o $@
 
 %.a: %.o
-        $(AR) crs $@ $<
+	$(AR) crs $@ $<
 
 %.so: %.o
-        $(CC) $< -shared -o $@
+	$(CC) $< -shared -o $@
