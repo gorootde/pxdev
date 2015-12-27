@@ -89,50 +89,50 @@ struct pixtIn {
 
 uint16_t crc16_calc(uint16_t crc, uint8_t data);
 
-int Spi_AutoMode(struct pixtOut *OutputData, struct pixtIn *InputData);
+extern int Spi_AutoMode(struct pixtOut *OutputData, struct pixtIn *InputData);
 
-int Spi_AutoModeDAC(struct pixtOutDAC *OutputDataDAC);
+extern int Spi_AutoModeDAC(struct pixtOutDAC *OutputDataDAC);
 
-int Spi_Set_Dout(int value);
+extern int Spi_Set_Dout(int value);
 
-int Spi_Get_Din();
+extern int Spi_Get_Din();
 
-uint16_t Spi_Get_Ain(int Idx);
+extern uint16_t Spi_Get_Ain(int Idx);
 
-int Spi_Set_Aout(int channel, uint16_t value);
+extern int Spi_Set_Aout(int channel, uint16_t value);
 
-int Spi_Set_Relays(int value);
+extern int Spi_Set_Relays(int value);
 
-uint16_t Spi_Get_Temp(int Idx);
+extern uint16_t Spi_Get_Temp(int Idx);
 
-uint16_t Spi_Get_Hum(int Idx);
+extern uint16_t Spi_Get_Hum(int Idx);
 
-int Spi_Set_Servo(int channel, int value);
+extern int Spi_Set_Servo(int channel, int value);
 
-int Spi_Set_Pwm(int channel, uint16_t value);
+extern int Spi_Set_Pwm(int channel, uint16_t value);
 
-int Spi_Set_PwmControl(int value0, int value1, int value2);
+extern int Spi_Set_PwmControl(int value0, int value1, int value2);
 
-int Spi_Set_GpioControl(int value);
+extern int Spi_Set_GpioControl(int value);
 
-int Spi_Set_UcControl(int value);
+extern int Spi_Set_UcControl(int value);
 
-int Spi_Set_AiControl(int value0, int value1);
+extern int Spi_Set_AiControl(int value0, int value1);
 
-int Spi_Set_RaspStat(int value);
+extern int Spi_Set_RaspStat(int value);
 
-int Spi_Setup(int spi_device);
+extern int Spi_Setup(int spi_device);
 
-int Spi_uC_Reset();
+extern int Spi_uC_Reset();
 
-int Spi_Get_uC_Status();
+extern int Spi_Get_uC_Status();
 
-uint16_t Spi_Get_uC_Version();
+extern uint16_t Spi_Get_uC_Version();
 
-int Change_Gpio_Mode(char pin, char mode);
+extern int Change_Gpio_Mode(char pin, char mode);
 
-int Change_Serial_Mode(uint8_t mode);
+extern int Change_Serial_Mode(uint8_t mode);
 
-int Spi_Set_Gpio(int value);
+extern int Spi_Set_Gpio(int value);
 
-int Spi_Get_Gpio();
+extern int Spi_Get_Gpio();
