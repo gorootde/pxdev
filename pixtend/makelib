@@ -13,8 +13,10 @@ case $1 in
 		echo "/usr/local/include/pixtend.h deleted"
 		echo "MAKELIBSCRIPT: deleted old files"
 		sudo gcc -c pixtend.c
+		sudo gcc -c -fPIC pixtend.c -o pixtend_fpic.o
 		echo "MAKELIBSCRIPT: pixtend.c compiled"
 		sudo ar crs libpixtend.a pixtend.o
+		sudo gcc pixtend_fpic.o -shared -o pixtend.so
 		echo "MAKELIBSCRIPT: created archive libpixtend.a"
 		sudo ranlib libpixtend.a
 		echo "MAKELIBSCRIPT: generated index for libpixtend.a"
