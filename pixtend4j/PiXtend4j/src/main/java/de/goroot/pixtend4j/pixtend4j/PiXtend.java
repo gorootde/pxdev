@@ -200,4 +200,34 @@ public interface PiXtend {
      */
     public void setServoValue(int channel, byte value);
 
+    /**
+     * Set a single relais.
+     *
+     * Be careful when using this function: As the embedded firmware does
+     * currently not support reading back the current relais state, the current
+     * state is cached within this application. This is not a problem if you are
+     * using automatic mode in combination with watchdog, but it might be one
+     * when using manual mode (cached state and actual state can get out of
+     * sync).
+     *
+     * @param index Index of the relais
+     * @param state true to activate, false to release
+     */
+    public void setRelais(int index, boolean state);
+
+    /**
+     * Set a single digital output
+     *
+     * Be careful when using this function: As the embedded firmware does
+     * currently not support reading back the current digital output state, the
+     * current state is cached within this application. This is not a problem if
+     * you are using automatic mode in combination with watchdog, but it might
+     * be one when using manual mode (cached state and actual state can get out
+     * of sync).
+     *
+     * @param channel Index of the output pin
+     * @param state true to set the pin to high, false to set it to low
+     */
+    public void setDigitalOutput(int channel, boolean state);
+
 }

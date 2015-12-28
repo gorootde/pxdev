@@ -49,11 +49,8 @@ class PiXtendAutoModeImpl extends AbstractPiXtendImpl {
     }
 
     private synchronized void update() {
-
-        System.out.println("BEFORE UPDATE! status=" + input.byUcStatus);
         getNativeLib().Spi_AutoMode(output, input);
         getNativeLib().Spi_AutoModeDAC(dacOut);
-        System.out.println("UPDATE! status=" + input.byUcStatus);
     }
 
     @Override

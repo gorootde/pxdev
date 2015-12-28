@@ -26,10 +26,10 @@ import com.sun.jna.Native;
  */
 abstract class AbstractPiXtendImpl implements PiXtend {
 
-    private static final int UC_CONTROL_BIT_RUN_INDEX = 4;
-    private static final int UC_CONTROL_BIT_WATCHDOG_INDEX = 0;
-
     private final JnaInterface nativeLib;
+
+    private byte cachedRelayState = 0;
+    private byte cachedDoState = 0;
 
     AbstractPiXtendImpl() {
         nativeLib = (JnaInterface) Native.loadLibrary("pixtend", JnaInterface.class);
@@ -109,6 +109,7 @@ abstract class AbstractPiXtendImpl implements PiXtend {
      */
     @Override
     public final void setDigitalOutputs(byte value) {
+        cachedDoState = value;
         writeDigitalOutputs(value);
     }
 
@@ -193,6 +194,7 @@ abstract class AbstractPiXtendImpl implements PiXtend {
      */
     @Override
     public final void setRelaisValues(byte values) {
+        cachedRelayState = values;
         writeRelaisValues(values);
     }
 
@@ -359,6 +361,26 @@ abstract class AbstractPiXtendImpl implements PiXtend {
         }
         short value = readHum(channel);
         return convertTempHumSensorValue(value, sensorType);
+    }
+
+    @Override
+    public void setRelais(int channel, boolean state) {
+        if (channel < 0 || channel > 3) {
+            throw new IllegalArgumentException("Channel has to be between 0 and 3");
+        }
+
+        cachedRelayState = state ? setBit(cachedRelayState, channel) : unsetBit(cachedRelayState, channel);
+        writeRelaisValues(cachedRelayState);
+
+    }
+
+    @Override
+    public void setDigitalOutput(int channel, boolean state) {
+        if (channel < 0 || channel > 5) {
+            throw new IllegalArgumentException("Channel has to be between 0 and 5");
+        }
+        cachedDoState = state ? setBit(cachedDoState, channel) : unsetBit(cachedDoState, channel);
+        writeDigitalOutputs(cachedDoState);
     }
 
     protected abstract int readDigitalInputs();
