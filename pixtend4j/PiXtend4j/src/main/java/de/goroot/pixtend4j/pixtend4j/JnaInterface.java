@@ -16,6 +16,7 @@
  */
 package de.goroot.pixtend4j.pixtend4j;
 
+import com.sun.jna.Library;
 import com.sun.jna.Structure;
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -27,7 +28,7 @@ import java.util.List;
  *
  * @author Michael Kolb <dev(at)db1smk(dot)com>
  */
-interface JnaInterface {
+interface JnaInterface extends Library {
 
     public class pixtOut extends Structure {
 

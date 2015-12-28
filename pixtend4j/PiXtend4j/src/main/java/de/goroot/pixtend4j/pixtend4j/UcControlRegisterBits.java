@@ -17,28 +17,28 @@
 package de.goroot.pixtend4j.pixtend4j;
 
 /**
+ * Bits of the Microcontroller-Control register
  *
  * @author Michael Kolb <dev(at)db1smk(dot)com>
  */
-public class PiXtendFactory {
+public enum UcControlRegisterBits {
 
     /**
-     * Get a new manual mode interfacing instance. Manual mode instances do
-     * perform a request for each single method call.
-     *
-     * @return
+     * Set this bit to enable watchdog in automatic mode
      */
-    public PiXtend newManualModeInstance() {
-        return new PiXtendManualModeImpl();
+    WATCHDOG_ENABLE(0),
+    /**
+     * Set this to exit init state and enter automatic mode
+     */
+    RUN_BIT(4);
+
+    private final int bitIndex;
+
+    UcControlRegisterBits(int bitIndex) {
+        this.bitIndex = bitIndex;
     }
 
-    /**
-     * Get a automatic mode interfacing instance. Automatic mode instances
-     * transfer and receive data asynchronously.
-     *
-     * @return
-     */
-    public PiXtend newAutomaticModeInstance() {
-        return new PiXtendAutoModeImpl();
+    int getBitIndex() {
+        return bitIndex;
     }
 }

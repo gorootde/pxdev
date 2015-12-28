@@ -80,6 +80,13 @@ public interface PiXtend {
     public int getUcStatusRegister();
 
     /**
+     * Set Uc control register
+     *
+     * @param bits
+     */
+    public void setUcControlRegister(UcControlRegisterBits... bits);
+
+    /**
      * Get the microcontroller's firmware version
      *
      * @return
@@ -115,7 +122,7 @@ public interface PiXtend {
      * @param register1
      * @param register2
      */
-    public void setAnalogInputConrolRegisters(byte register1, byte register2);
+    public void setAnalogInputControlRegisters(byte register1, byte register2);
 
     /**
      * Set analog output

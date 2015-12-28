@@ -20,25 +20,12 @@ package de.goroot.pixtend4j.pixtend4j;
  *
  * @author Michael Kolb <dev(at)db1smk(dot)com>
  */
-public class PiXtendFactory {
+public class Main {
 
-    /**
-     * Get a new manual mode interfacing instance. Manual mode instances do
-     * perform a request for each single method call.
-     *
-     * @return
-     */
-    public PiXtend newManualModeInstance() {
-        return new PiXtendManualModeImpl();
-    }
-
-    /**
-     * Get a automatic mode interfacing instance. Automatic mode instances
-     * transfer and receive data asynchronously.
-     *
-     * @return
-     */
-    public PiXtend newAutomaticModeInstance() {
-        return new PiXtendAutoModeImpl();
+    public static void main(String[] args) throws Exception {
+        PiXtend px = new PiXtendFactory().newAutomaticModeInstance();
+        px.setRelaisValues((byte) 255);
+        Thread.sleep(1000);
+        px.setRelaisValues((byte) 0);
     }
 }
