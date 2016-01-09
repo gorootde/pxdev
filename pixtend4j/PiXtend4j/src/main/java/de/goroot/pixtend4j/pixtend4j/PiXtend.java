@@ -73,6 +73,29 @@ public interface PiXtend {
     public byte getGpioValues();
 
     /**
+     * Read a specific GPIO pin
+     *
+     * @param channel Pin Index
+     * @return true if High, false if Low
+     */
+    public boolean getGpioValue(int channel);
+
+    /**
+     * Read a specific GPIO pin
+     *
+     * Be careful when using this function: As the embedded firmware does
+     * currently not support reading back the current digital output state, the
+     * current state is cached within this application. This is not a problem if
+     * you are using automatic mode in combination with watchdog, but it might
+     * be one when using manual mode (cached state and actual state can get out
+     * of sync).
+     *
+     * @param channel Pin Index
+     * @param state true to set the output High, false to set it Low
+     */
+    public void setGpioValue(int channel, boolean state);
+
+    /**
      * Get the microcontroller status register
      *
      * @return

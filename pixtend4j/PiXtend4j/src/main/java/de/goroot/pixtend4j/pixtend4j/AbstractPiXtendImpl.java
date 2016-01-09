@@ -16,7 +16,10 @@
  */
 package de.goroot.pixtend4j.pixtend4j;
 
+import java.math.BigInteger;
+
 import com.sun.jna.Native;
+import java.util.BitSet;
 
 /**
  * Baseclass for actual PiXtend interfacing implementations. Input value range
@@ -283,7 +286,7 @@ abstract class AbstractPiXtendImpl implements PiXtend {
         switch (mode) {
             case RS232:
                 writeSerialMode(0);
-            //getNativeLib().Change_Serial_Mode((byte) 0);
+            // getNativeLib().Change_Serial_Mode((byte) 0);
             case RS485:
             default:
                 writeSerialMode(1);
@@ -381,6 +384,18 @@ abstract class AbstractPiXtendImpl implements PiXtend {
         }
         cachedDoState = state ? setBit(cachedDoState, channel) : unsetBit(cachedDoState, channel);
         writeDigitalOutputs(cachedDoState);
+    }
+
+    @Override
+    public boolean getGpioValue(int channel) {
+        return BigInteger.valueOf(getGpioValues()).testBit(channel);
+    }
+
+    @Override
+    public void setGpioValue(int channel, boolean state) {
+        byte currentRegister = getGpioValues();
+        byte newRegister = (byte) (currentRegister | (1 << channel));
+        setGpioValues(newRegister);
     }
 
     protected abstract int readDigitalInputs();
