@@ -1,0 +1,8 @@
+/pixtend4j/PiXtend4j/target/
+/pixtend4j2mqtt/target/
+nb-configuration.xml
+nbactions.xml
+firmware/nbproject
+.project
+.classpath
+pixtend4j/PiXtend4j/.settings
