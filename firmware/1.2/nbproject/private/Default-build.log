@@ -1,0 +1,4 @@
+
+-------- begin --------
+sh: avr-gcc: command not found
+make: *** [gccversion] Error 127
