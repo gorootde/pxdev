@@ -2,11 +2,11 @@
 # This file is part of the PiXtend(R) Project.
 #
 # For more information about PiXtend(R) and this program,
-# see <http://www.pixtend.de> or <http://www.pixtend.com>
+# see <https://www.pixtend.de> or <https://www.pixtend.com>
 #
-# Copyright (C) 2015 Nils Mensing, Christian Strobel
-# Qube Solutions UG (haftungsbeschränkt), Luitgardweg 18
-# 71083 Herrenberg, Germany 
+# Copyright (C) 2018 Robin Turner
+# Qube Solutions GmbH, Arbachtalstr. 6
+# 72800 Eningen, Germany
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
 #include <signal.h>
 #include <pixtend.h>
 
-#define VERSION "0.5.0"
+#define VERSION "0.5.6"
 
 static int fd;
 
@@ -50,35 +50,43 @@ void help()
 	printf("usage: sudo pixtendtool [OPTION] [VALUE(s)]\n");
 	printf("\n");
 	printf("available options:\n");
-	printf("\t-h \t\t\t\tprint this help\n");
-	printf("\t-do VALUE \t\t\tset the digital output byte to VALUE[0-255]\n");
-	printf("\t-di \t\t\t\tget the digital input byte\n");
-	printf("\t-di BIT\t\t\t\tget the digital input BIT[0-7]\n");	
-	printf("\t-ai CHANNEL \t\t\tget the analog input CHANNEL[0-3] raw value\n");
-	printf("\t-ai CHANNEL REF \t\tget the analog input CHANNEL[0-3] value based on REF[5V/10V]\n");
-	printf("\t-aic VALUE0 VALUE1 \t\twrite AI Control Registers to VALUEx[0-255]\n");
-	printf("\t-ao CHANNEL VALUE \t\tset the analog output CHANNEL[0-1] to VALUE[0-1023]\n");	
-	printf("\t-rel VALUE \t\t\tset the relay output byte to VALUE[0-255]\n");
-	printf("\t-gw VALUE \t\t\twrite GPIO output byte to VALUE[0-255]\n");
-	printf("\t-gr \t\t\t\tread GPIO input byte\n");
-	printf("\t-gc VALUE \t\t\twrite GPIO control register to VALUE[0-255]\n");	
-	printf("\t-tr CHANNEL [TYPE]\t\tread temperature from CHANNEL[0-3] of TYPE[dht11/dht22]\n");
-	printf("\t-hr CHANNEL [TYPE]\t\tread humidity from CHANNEL[0-3] of TYPE[dht11/dht22]\n");	
-	printf("\t-srv CHANNEL VALUE \t\tset a servo VALUE[0-255] for CHANNEL[0-1]\n");
-	printf("\t-pwm CHANNEL VALUE \t\tset a pwm VALUE[0-65535] for CHANNEL[0-1]\n");
-	printf("\t-pwmc VALUE0 VALUE1 VALUE2 \twrite PWM control registers to VALUEx[0-255] \n");
-	printf("\t-shw MODE\t\t\tchange serial hardware MODE[rs232/rs485]\n");
-	printf("\t-swc CHAR\t\t\twrite a CHAR on RS232/485\n");
-	printf("\t-sws STRING\t\t\twrite a STRING on RS232/485 (max. len=16)\n");
-	printf("\t-sr \t\t\t\tread data from RS232/485 until Ctrl^C\n");
-	printf("\t-ucc VALUE \t\t\twrite the microcontroller control register to VALUE[0-255]\n");
-	printf("\t-ucr \t\t\t\treset the microcontroller\n");
-	printf("\t-ucs \t\t\t\tread microcontroller status register\n");
-	printf("\t-ucv \t\t\t\tread microcontroller version\n");
-	printf("\t-rasp VALUE \t\t\twrite the RaspberryPi status register to VALUE[0-255]\n");
+	printf("\t-h \t\t\t\t\tprint this help\n");
+	printf("\t-do VALUE \t\t\t\tset the digital output byte to VALUE[0-255]\n");
+	printf("\t-do BIT VALUE \t\t\t\tset the digital output BIT[0-5] to VALUE [0/1]\n");
+	printf("\t-dor\t\t\t\t\tread the digital output byte\n");
+	printf("\t-dor BIT \t\t\t\tread the digital output BIT[0-5]\n");
+	printf("\t-di \t\t\t\t\tget the digital input byte\n");
+	printf("\t-di BIT\t\t\t\t\tget the digital input BIT[0-7]\n");
+	printf("\t-ai CHANNEL \t\t\t\tget the analog input CHANNEL[0-3] raw value\n");
+	printf("\t-ai CHANNEL REF \t\t\tget the analog input CHANNEL[0-3] value based on REF[5V/10V]\n");
+	printf("\t-aic VALUE0 VALUE1 \t\t\twrite AI Control Registers to VALUEx[0-255]\n");
+	printf("\t-ao CHANNEL VALUE \t\t\tset the analog output CHANNEL[0-1] to VALUE[0-1023]\n");
+	printf("\t-rel VALUE \t\t\t\tset the relay output byte to VALUE[0-255]\n");
+	printf("\t-rel BIT VALUE \t\t\t\tset the relay output BIT[0-3] to VALUE[0/1]\n");
+	printf("\t-relr \t\t\t\t\tread the relay output byte\n");
+	printf("\t-relr BIT\t\t\t\tread the relay output BIT[0-3]\n");
+	printf("\t-gw VALUE \t\t\t\twrite GPIO output byte to VALUE[0-255]\n");
+	printf("\t-gw BIT VALUE \t\t\t\tset GPIO output BIT to VALUE[0/1]\n");
+	printf("\t-gr \t\t\t\t\tread GPIO input byte\n");
+	printf("\t-gr BIT\t\t\t\t\tread GPIO input BIT[0-3]\n");
+	printf("\t-gc VALUE \t\t\t\twrite GPIO control register to VALUE[0-255]\n");
+	printf("\t-tr CHANNEL [TYPE]\t\t\tread temperature from CHANNEL[0-3] of TYPE[dht11/dht22]\n");
+	printf("\t-hr CHANNEL [TYPE]\t\t\tread humidity from CHANNEL[0-3] of TYPE[dht11/dht22]\n");
+	printf("\t-srv CHANNEL VALUE \t\t\tset a servo VALUE[0-255] for CHANNEL[0-1]\n");
+	printf("\t-pwm CHANNEL VALUE \t\t\tset a pwm VALUE[0-65535] for CHANNEL[0-1]\n");
+	printf("\t-pwmc VALUE0 VALUE1 VALUE2 \t\twrite PWM control registers to VALUEx[0-255] \n");
+	printf("\t-shw MODE\t\t\t\tchange serial hardware MODE[rs232/rs485]\n");
+	printf("\t-swc SERIALDEVICE BAUDRATE CHAR\t\twrite a CHAR on SERIALDEVICE\n");
+	printf("\t-sws SERIALDEVICE BAUDRATE STRING\twrite a STRING on SERIALDEVICE (max 255)\n");
+	printf("\t-sr SERIALDEVICE BAUDRATE\t\tread data from SERIALDEVICE until Ctrl^C\n");
+	printf("\t-ucc VALUE \t\t\t\twrite the microcontroller control register to VALUE[0-255]\n");
+	printf("\t-ucr \t\t\t\t\treset the microcontroller\n");
+	printf("\t-ucs \t\t\t\t\tread microcontroller status register\n");
+	printf("\t-ucv \t\t\t\t\tread microcontroller version\n");
+	printf("\t-rasp VALUE \t\t\t\twrite the RaspberryPi status register to VALUE[0-255]\n");
 	printf("\n");
 	printf("Application Notes about the correct usage of Control and Status Bytes\n");
-	printf("can be found at http://www.pixtend.de/pixtend/downloads/\n");
+	printf("can be found at https://www.pixtend.de/pixtend/downloads/\n");
 	
 	return;
 }
@@ -99,6 +107,46 @@ int limitPar(int *value, int min, int max, const char* par)
 	
 	return ret;
 }
+
+uint16_t getUcVersion(uint8_t *versionH, uint8_t *versionL) {
+
+	uint16_t version;
+	Spi_Setup(0);
+	
+	//Read current uC Firmware Version
+	version = Spi_Get_uC_Version();
+	*versionH = (uint8_t)(version>>8);
+	*versionL = (uint8_t)(version & 0xFF);
+	
+	return version;
+}
+
+uint8_t echoVersionConflict() 	
+{
+	uint8_t versionH;
+	uint8_t versionL;
+	getUcVersion(&versionH, &versionL);
+	
+	printf("Version Conflict: This feature is not available for your uC-Version.\n");
+	printf("Your current microcontroller version is [%d.%d]\n", versionH, versionL);
+	
+	return 0;
+}
+	
+	
+uint8_t isCompatibleTo(int minVersionH, int minVersionL, int maxVersionH, int maxVersionL) {
+	
+	uint8_t versionH;
+	uint8_t versionL;
+	getUcVersion(&versionH, &versionL);
+	
+	if ((versionH >= minVersionH) && (versionH <= maxVersionH) && (versionL >= minVersionL) && (versionL <= maxVersionL))
+		return 1;
+	else 
+		return 0;
+}
+
+
 
 int main(int argc, char *argv[]) 
 {
@@ -124,6 +172,76 @@ int main(int argc, char *argv[])
 			Spi_Set_Dout(value);
 			printf("Digital output byte set to [%d]\n",value);
 		}
+		else if(strcmp(argv[1],"-do")==0 && argc==4)
+		{
+			if (!(isCompatibleTo(12,6, 12,9) | isCompatibleTo(13,2, 99,99))) 
+			{
+				echoVersionConflict();
+				return 1;
+			}
+			
+			int bit;
+			bit = atoi(argv[2]);
+			limitPar(&bit, 0,5, "BIT");
+			
+			int value;
+			value = atoi(argv[3]);
+			limitPar(&value, 0,1, "VALUE");
+			
+			uint8_t fvalue;
+			uint8_t currentValue;
+			
+			Spi_Setup(0);
+			currentValue = Spi_Get_Dout();
+			
+			if (value == 0) {
+				fvalue = (uint8_t)(currentValue & ~(1<<bit));
+			}
+			else if (value == 1) {
+				fvalue = (uint8_t)(currentValue | (1<<bit));
+			}			
+			Spi_Set_Dout(fvalue);
+			printf("Digital output bit %d set to [%d]\n",bit,value);
+		}
+		else if(strcmp(argv[1],"-dor")==0 && argc==2)
+		{
+			if (!(isCompatibleTo(12,6, 12,9) | isCompatibleTo(13,2, 99,99))) 
+			{
+				echoVersionConflict();
+				return 1;
+			}
+		
+			uint8_t fvalue;
+						
+			Spi_Setup(0);
+			fvalue = Spi_Get_Dout();
+			
+			printf("Digital output byte value is [%d]\n",fvalue);
+		}
+		else if(strcmp(argv[1],"-dor")==0 && argc==3)
+		{
+			if (!(isCompatibleTo(12,6, 12,9) | isCompatibleTo(13,2, 99,99))) 
+			{
+				echoVersionConflict();
+				return 1;
+			}
+			
+			int bit;
+			bit = atoi(argv[2]);
+			limitPar(&bit, 0,5, "BIT");
+			
+			uint8_t fvalue;
+			
+			Spi_Setup(0);
+			if(Spi_Get_Dout() & (1<<bit)) {
+				fvalue = 1;
+			}
+			else {
+				fvalue = 0;
+			}
+			
+			printf("Digital output bit %d value is [%d]\n",bit,fvalue);
+		}
 		else if(strcmp(argv[1],"-di")==0 && argc==2)
 		{
 			Spi_Setup(0);
@@ -143,7 +261,7 @@ int main(int argc, char *argv[])
 			}
 			else {
 				fvalue = 0;
-			}			
+			}
 			printf("Digital input bit %d value is [%d]\n",bit,fvalue);
 		}
 		else if(strcmp(argv[1],"-ai")==0 && argc==3)
@@ -217,13 +335,97 @@ int main(int argc, char *argv[])
 			Spi_Set_Relays(fvalue);
 			printf("Relay outputs set to [%d]\n",fvalue);
 		}
+		else if(strcmp(argv[1],"-rel")==0 && argc==4)
+		{
+			if (!(isCompatibleTo(12,6, 12,9) | isCompatibleTo(13,2, 99,99))) 
+			{
+				echoVersionConflict();
+				return 1;
+			}
+			
+			int bit;
+			bit = atoi(argv[2]);
+			limitPar(&bit, 0,3, "BIT");
+			
+			int value;
+			value = atoi(argv[3]);
+			limitPar(&value, 0,1, "VALUE");
+			
+			uint8_t fvalue;
+			uint8_t currentValue;
+			
+			Spi_Setup(0);
+			currentValue = Spi_Get_Relays();
+			
+			if (value == 0) {
+				fvalue = (uint8_t)(currentValue & ~(1<<bit));
+			}
+			else if (value == 1) {
+				fvalue = (uint8_t)(currentValue | (1<<bit));
+			}			
+			Spi_Set_Relays(fvalue);
+			printf("Relay output bit %d set to [%d]\n",bit,value);
+		}
+		else if(strcmp(argv[1],"-relr")==0 && argc==2)
+		{
+			if (!(isCompatibleTo(12,6, 12,9) | isCompatibleTo(13,2, 99,99))) 
+			{
+				echoVersionConflict();
+				return 1;
+			}
+			
+			uint8_t fvalue;
+			
+			Spi_Setup(0);
+			fvalue = Spi_Get_Relays();
 		
-		
+			printf("Relay output byte value is [%d]\n",fvalue);
+		}
+		else if(strcmp(argv[1],"-relr")==0 && argc==3)
+		{
+			if (!(isCompatibleTo(12,6, 12,9) | isCompatibleTo(13,2, 99,99))) 
+			{
+				echoVersionConflict();
+				return 1;
+			}
+			
+			int bit;
+			bit = atoi(argv[2]);
+			limitPar(&bit, 0,3, "BIT");
+			
+			uint8_t fvalue;
+			
+			Spi_Setup(0);
+			if(Spi_Get_Relays() & (1<<bit)) {
+				fvalue = 1;
+			}
+			else {
+				fvalue = 0;
+			}
+			
+			printf("Relay output bit %d value is [%d]\n",bit,fvalue);
+		}
 		else if(strcmp(argv[1],"-gr")==0 && argc==2)
-		{			
+		{
 			Spi_Setup(0);
 			nRet = Spi_Get_Gpio();
 			printf("GPIO byte value is [%d]\n",nRet);
+		}
+		else if(strcmp(argv[1],"-gr")==0 && argc==3)
+		{
+			int bit;
+			bit = atoi(argv[2]);
+			limitPar(&bit, 0,3, "BIT");
+			
+			uint8_t fvalue;
+			Spi_Setup(0);
+			if(Spi_Get_Gpio() & (1<<bit)) {
+				fvalue = 1;
+			}
+			else {
+				fvalue = 0;
+			}
+			printf("GPIO bit %d value is [%d]\n",bit,fvalue);
 		}
 		else if(strcmp(argv[1],"-gw")==0 && argc==3)
 		{
@@ -233,6 +435,31 @@ int main(int argc, char *argv[])
 			Spi_Setup(0);
 			Spi_Set_Gpio(value);
 			printf("GPIO byte set to [%d]\n",value);
+		}
+		else if(strcmp(argv[1],"-gw")==0 && argc==4)
+		{
+			int bit;
+			bit = atoi(argv[2]);
+			limitPar(&bit, 0,3, "BIT");
+			
+			int value;
+			value = atoi(argv[3]);
+			limitPar(&value, 0,1, "VALUE");
+			
+			uint8_t fvalue;
+			uint8_t currentValue;
+			
+			Spi_Setup(0);
+			currentValue = Spi_Get_Gpio();
+			
+			if (value == 0) {
+				fvalue = (uint8_t)(currentValue & ~(1<<bit));
+			}
+			else if (value == 1) {
+				fvalue = (uint8_t)(currentValue | (1<<bit));
+			}			
+			Spi_Set_Gpio(fvalue);
+			printf("GPIO output bit %d set to [%d]\n",bit,value);
 		}
 		else if(strcmp(argv[1],"-gc")==0 && argc==3)
 		{
@@ -311,7 +538,7 @@ int main(int argc, char *argv[])
 			limitPar(&value1, 0,255, "VALUE1");
 			int value2 = atoi(argv[4]);
 			limitPar(&value2, 0,255, "VALUE2");
-			
+
 			Spi_Setup(0);
 			Spi_Set_PwmControl(value0,value1,value2);
 			printf("PWM control registers set to [%d], [%d], [%d]\n",value0,value1,value2);
@@ -323,15 +550,22 @@ int main(int argc, char *argv[])
 				printf("Changed serial hardware mode to RS232\n");
 			}
 			else if(strcmp(argv[2],"rs485")==0) {
+                Change_Serial_Mode(1);
 				printf("Changed serial hardware mode to RS485\n");
 			}
 			else  {
 				printf("Error: Unknown hardware mode %s. Valid options are: [rs232/rs485]\n",argv[2]);
-			}		
+			}
 		}
-		else if(strcmp(argv[1],"-swc")==0 && argc==3)
+		else if(strcmp(argv[1],"-swc")==0 && argc==5)
 		{
-			fd = serialOpen("/dev/ttyAMA0",9600);
+                        char strDevice[256];
+                        int  baudRate;
+
+                        strcpy(strDevice, argv[2]);
+                        baudRate = atoi(argv[3]);
+
+			fd = serialOpen(strDevice, baudRate);
 			if(fd==-1)
 			{
 				printf("Error: Couldn't open serial device\n");
@@ -339,27 +573,32 @@ int main(int argc, char *argv[])
 			else
 			{
 				printf("Opened serial device [fd=%d]\n",fd);
-				serialPutchar(fd,*argv[2]);
-				printf("put char %c\n",*argv[2]);
+				serialPutchar(fd,*argv[4]);
+				printf("put char %c\n",*argv[4]);
 				serialFlush(fd);
 				printf("Flushed serial device\n");
 				serialClose(fd);
 				printf("Closed serial device\n");
 			}
 		}
-		else if(strcmp(argv[1],"-sws")==0 && argc>=3)
+		else if(strcmp(argv[1],"-sws")==0 && argc>=5)
 		{
 			char str[256];
+			char strDevice[256];
+			int  baudRate;
+
 			int i;
-			
-			strcpy(str,argv[2]);
-			for(i=3;i<argc;i++)
+			strcpy(strDevice, argv[2]);
+			baudRate = atoi(argv[3]);
+
+			strcpy(str,argv[4]);
+			for(i=5;i<argc;i++)
 			{
 				strcat(str," ");
 				strcat(str,argv[i]);
 			}
-			
-			fd = serialOpen("/dev/ttyAMA0",9600);
+
+			fd = serialOpen(strDevice,baudRate);
 			if(fd==-1)
 			{
 				printf("Error: Couldn't open serial device\n");
@@ -369,20 +608,23 @@ int main(int argc, char *argv[])
 				printf("Opened serial device [fd=%d]\n",fd);
 				serialPuts(fd,str);
 				printf("put string %s\n",str);
-				serialFlush(fd);
-				printf("Flushed serial device\n");
 				serialClose(fd);
 				printf("Closed serial device\n");
 			}
 		}
-		else if(strcmp(argv[1],"-sr")==0 && argc==2)
+		else if(strcmp(argv[1],"-sr")==0 && argc==4)
 		{
 			int chr;
 			int nRet;
-			
+                        char strDevice[256];
+                        int  baudRate;
+
+                        strcpy(strDevice, argv[2]);
+                        baudRate = atoi(argv[3]);
+
 			signal(SIGINT, signal_callback_handler);
-			
-			fd = serialOpen("/dev/ttyAMA0",9600);
+
+			fd = serialOpen(strDevice,baudRate);
 			if(fd==-1)
 			{
 				printf("Error: Couldn't open serial device\n");
@@ -413,7 +655,7 @@ int main(int argc, char *argv[])
 						printf("Closed serial device\n");
 						return 0;
 					}
-					
+
 				}
 			}
 		}
@@ -421,11 +663,11 @@ int main(int argc, char *argv[])
 		{
 			int value = atoi(argv[2]);
 			limitPar(&value, 0,255, "VALUE");
-			
+
 			Spi_Setup(0);
 			Spi_Set_UcControl(value);
 			printf("Microcontroller control register set to [%d]\n",value);
-		}		
+		}
 		else if(strcmp(argv[1],"-ucr")==0 && argc==2)
 		{
 			nRet = Spi_uC_Reset();
@@ -439,16 +681,16 @@ int main(int argc, char *argv[])
 		}
 		else if(strcmp(argv[1],"-ucv")==0 && argc==2)
 		{
-			uint16_t version;
-			Spi_Setup(0);
-			version = Spi_Get_uC_Version();
-			printf("Microcontroller version is %d.%d\n", (uint8_t)(version>>8), (uint8_t)(version & 0xFF));
+			uint8_t versionH;
+			uint8_t versionL;
+			getUcVersion(&versionH, &versionL);
+			printf("Microcontroller version is [%d.%d]\n", versionH, versionL);
 		}
 		else if(strcmp(argv[1],"-rasp")==0 && argc==3)
 		{
 			int value = atoi(argv[2]);
 			limitPar(&value, 0,255, "VALUE");
-			
+
 			Spi_Setup(0);
 			Spi_Set_RaspStat(value);
 			printf("RaspberryPi status register set to [%d]\n",value);

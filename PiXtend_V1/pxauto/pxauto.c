@@ -2,11 +2,11 @@
 # This file is part of the PiXtend(R) Project.
 #
 # For more information about PiXtend(R) and this program,
-# see <http://www.pixtend.de> or <http://www.pixtend.com>
+# see <https://www.pixtend.de> or <https://www.pixtend.com>
 #
-# Copyright (C) 2014 Christian Strobel
-# Qube Solutions UG (haftungsbeschränkt), Luitgardweg 18
-# 71083 Herrenberg, Germany 
+# Copyright (C) 2018 Robin Turner
+# Qube Solutions GmbH, Arbachtalstr. 6
+# 72800 Eningen, Germany
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@
 */
 
 #include "pxauto.h"
+
+#define PXAUTO_HEADERSTRING "PiXtend Auto Tool - V0.5.6 - http://www.pixtend.de"
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
 #define KEY_RETURN '\n'
@@ -177,8 +179,8 @@ void init_HOME() {
 	mvwaddstr(win_HOME, 13, 2, " Enter values by typing them in or");
 	mvwaddstr(win_HOME, 14, 2, " use LEFT and RIGHT to change Booleans");
 	mvwaddstr(win_HOME, 15, 2, " ");
-	mvwaddstr(win_HOME, 16, 2, "Visit http://www.pixtend.de for more...");	
-	mvwaddstr(win_HOME, 17, 2, " 2014-2015, Qube Solutions UG");
+	mvwaddstr(win_HOME, 16, 2, "Visit https://www.pixtend.de for more...");	
+	mvwaddstr(win_HOME, 17, 2, " 2014-2018, Qube Solutions GmbH");
 	mvwaddstr(win_HOME, 18, 2, " ");
 	wnoutrefresh(win_header);	
 	box(win_HOME, 0, 0);	
@@ -694,6 +696,10 @@ int main()
 	int c;		
 	updateRequest = 0;
 	
+	//Setup SPI using wiringPi	
+	Spi_Setup(0); //use SPI device 0.0 (PiXtend), exit on failure 
+	Spi_Setup(1); //use SPI device 0.1 (PiXtend DAC), exit on failure
+	
 	//Initialize curses 
 	initscr();
 	start_color();
@@ -724,6 +730,10 @@ int main()
 	init_CTRL();
 	init_STAT();
 	
+    //update UC_CTRL value to 16 in order to start communication with PiXtend uC immediately
+    set_field_buffer(field_CTRL[4],0,"16");
+    update_CTRL();
+    
 	cur_form = form_DIN;
 	top_panel(pan_HOME);	
 
@@ -733,12 +743,8 @@ int main()
 	doupdate();
 	update_header();
 	doupdate();
-	
-	//Enable Auto Mode with 200ms 
-	Spi_Setup(0); //use SPI device 0.0 (PiXtend)
-	Spi_Setup(1); //use SPI device 0.1 (PiXtend DAC)
-	
-	//Connect Timer Signal
+		
+	//Connect Timer Signal with 200ms refresh rate 
 	(void) signal(SIGALRM, timer_callback);
 	start_timer();
 	
@@ -982,7 +988,7 @@ void update_header() {
 	mvwaddstr(win_header, 3, 3, "  / /_/ /  / /   |   /  / __/ / _ \\  / __ \\ / __  / ");
 	mvwaddstr(win_header, 4, 3, " / ____/  / /   /   |  / /_  /  __/ / / / // /_/ /  ");
 	mvwaddstr(win_header, 5, 3, "/_/      /_/   /_/|_|  \\__/  \\___/ /_/ /_/ \\__,_/   ");
-	mvwaddstr(win_header, 6, 5, "PiXtend Auto Tool - V0.4.1 - http://www.pixtend.de");
+	mvwaddstr(win_header, 6, 5, PXAUTO_HEADERSTRING);
 	box(win_header, 0, 0);
 	wnoutrefresh(win_header);
 }
@@ -1231,11 +1237,11 @@ void update_CTRL() {
 void update_STAT() {
 	
 	char str[4];
-	snprintf(str, 4, "%d", InputData.byUcVersionL);
+	snprintf(str, 4, " %d", InputData.byUcVersionL);
 	set_field_buffer(field_STAT[0], 0, str);
 	snprintf(str, 4, "%d", InputData.byUcVersionH);
 	set_field_buffer(field_STAT[1], 0, str);
-	snprintf(str, 4, "%d", InputData.byUcStatus);
+	snprintf(str, 4, " %d", InputData.byUcStatus);
 	set_field_buffer(field_STAT[2], 0, str);
 	wnoutrefresh(win_STAT);
 }
