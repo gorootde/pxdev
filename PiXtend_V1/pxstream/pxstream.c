@@ -69,14 +69,80 @@ void help()
 	printf("\t-u \t\t\t\t\tonly print values that changed\n");
 }
 
+/**
+ * Prints a value if it changed, it is the first loop iteration, or always, if printonlychanged is disabled
+ * 
+ * @param valueIdentifier ID String for the value
+ * @param old Old value
+ * @param current Current value
+ */
+void printValueUint8(char *valueIdentifier, uint8_t old, uint8_t current)
+{
+	if (!printOnlyChanged || tCount == 1 || old != current)
+	{
+		printf("%s %d\n", valueIdentifier, current);
+	}
+}
+
+/**
+ * Prints a value if it changed, it is the first loop iteration, or always, if printonlychanged is disabled
+ * 
+ * @param valueIdentifier ID String for the value
+ * @param old Old value
+ * @param current Current value
+ */
+void printValueFloat(char *valueIdentifier, float old, float current)
+{
+	if (!printOnlyChanged || tCount == 1 || old != current)
+	{
+		printf("%s %f\n", valueIdentifier, current);
+	}
+}
+
+/**
+ * Prints a value if it changed, it is the first loop iteration, or always, if printonlychanged is disabled
+ * 
+ * @param valueIdentifier ID String for the value
+ * @param old Old value
+ * @param current Current value
+ */
+void printValueUint16(char *valueIdentifier, uint16_t old, uint16_t current)
+{
+	if (!printOnlyChanged || tCount == 1 || old != current)
+	{
+		printf("%s %d\n", valueIdentifier, current);
+	}
+}
+
+/**
+ * Prints whole byte and individual bits
+ * 
+ * @param valueIdentifierFormatString Format string containing %s as placeholder for the bit ID
+ * @param old Old value
+ * @param current Current value
+ * @param bitsToPrint Number of bits to print
+ */
+void printByteAndBits(char *valueIdentifierFormatString, uint8_t old, uint8_t current, uint8_t bitsToPrint)
+{
+	if (!printOnlyChanged || tCount == 1 || old != current)
+	{
+		printf("%sB %d\n", valueIdentifierFormatString, current);
+		for (uint8_t i = 0; i < bitsToPrint; i++)
+		{
+			uint8_t oldBit = BIT(old, i);
+			uint8_t currentBit = BIT(current, i);
+			if (!printOnlyChanged || tCount == 1 || oldBit != currentBit)
+			{
+				printf("%s%d %d\n", valueIdentifierFormatString, i, currentBit);
+			}
+		}
+	}
+}
+
 void printValues()
 {
 	/*
 InputData TODO:
-	uint16_t wAi0;
-	uint16_t wAi1;
-	uint16_t wAi2;
-	uint16_t wAi3;
 
 	uint16_t wTemp0;
 	uint16_t wTemp1;
@@ -95,103 +161,47 @@ InputData TODO:
 	float rHumid1;
 	float rHumid2;
 	float rHumid3;
+
+
 */
-	if (!printOnlyChanged || tCount == 1 || oldInputData.byUcStatus != InputData.byUcStatus)
-	{
-		printf("UCSTATUS %d\n", InputData.byUcStatus);
-	}
+	printValueUint8("IN_UCSTATUS", oldInputData.byUcStatus, InputData.byUcStatus);
+	printByteAndBits("IN_GPIO", oldInputData.byGpioIn, InputData.byGpioIn, 4);
+	printValueFloat("IN_RAI0", oldInputData.rAi0, InputData.rAi0);
+	printValueFloat("IN_RAI1", oldInputData.rAi1, InputData.rAi1);
+	printValueFloat("IN_RAI2", oldInputData.rAi2, InputData.rAi2);
+	printValueFloat("IN_RAI3", oldInputData.rAi3, InputData.rAi3);
 
-	if (!printOnlyChanged || tCount == 1 || oldInputData.byGpioIn != InputData.byGpioIn)
-	{
-		printf("GPIOIB %d \n", InputData.byGpioIn);
-		printf("GPIOI0 %d \n", BIT(InputData.byGpioIn, 0));
-		printf("GPIOI1 %d \n", BIT(InputData.byGpioIn, 1));
-		printf("GPIOI2 %d \n", BIT(InputData.byGpioIn, 2));
-		printf("GPIOI3 %d \n", BIT(InputData.byGpioIn, 3));
-	}
+	printValueUint16("IN_WAI0", oldInputData.wAi0, InputData.wAi0);
+	printValueUint16("IN_WAI1", oldInputData.wAi1, InputData.wAi1);
+	printValueUint16("IN_WAI2", oldInputData.wAi2, InputData.wAi2);
+	printValueUint16("IN_WAI3", oldInputData.wAi3, InputData.wAi3);
 
-	if (!printOnlyChanged || tCount == 1 || oldInputData.rAi0 != InputData.rAi0)
-	{
-		printf("AI0 %f\n", InputData.rAi0);
-	}
-	if (!printOnlyChanged || tCount == 1 || oldInputData.rAi1 != InputData.rAi1)
-	{
-		printf("AI1 %f\n", InputData.rAi1);
-	}
-	if (!printOnlyChanged || tCount == 1 || oldInputData.rAi2 != InputData.rAi2)
-	{
-		printf("AI2 %f\n", InputData.rAi2);
-	}
-	if (!printOnlyChanged || tCount == 1 || oldInputData.rAi3 != InputData.rAi3)
-	{
-		printf("AI3 %f\n", InputData.rAi3);
-	}
-
-	if (!printOnlyChanged || tCount == 1 || oldInputData.byDigIn != InputData.byDigIn)
-	{
-		printf("DINB %d\n", InputData.byDigIn);
-		printf("DIN0 %d\n", BIT(InputData.byDigIn, 0));
-		printf("DIN1 %d\n", BIT(InputData.byDigIn, 1));
-		printf("DIN2 %d\n", BIT(InputData.byDigIn, 2));
-		printf("DIN3 %d\n", BIT(InputData.byDigIn, 3));
-		printf("DIN4 %d\n", BIT(InputData.byDigIn, 4));
-		printf("DIN5 %d\n", BIT(InputData.byDigIn, 5));
-		printf("DIN6 %d\n", BIT(InputData.byDigIn, 6));
-		printf("DIN7 %d\n", BIT(InputData.byDigIn, 7));
-	}
+	printByteAndBits("IN_D", oldInputData.byDigIn, InputData.byDigIn, 8);
 
 	if (!printOnlyChanged || tCount == 1 || oldInputData.byUcVersionH != InputData.byUcVersionH)
 	{
-		printf("UCVER %d.%d\n", InputData.byUcVersionH, InputData.byUcVersionL);
+		printf("IN_UCVER %d.%d\n", InputData.byUcVersionH, InputData.byUcVersionL);
 	}
 
-	if (!printOnlyChanged || tCount == 1 || oldOutputData.byAiCtrl0 != OutputData.byAiCtrl0)
-	{
-		printf("AICTRL0 %d\n", OutputData.byAiCtrl0);
-	}
+	printValueUint8("OUT_AICTRL0", oldOutputData.byAiCtrl0, OutputData.byAiCtrl0);
+	printValueUint8("OUT_AICTRL1", oldOutputData.byAiCtrl1, OutputData.byAiCtrl1);
 
-	if (!printOnlyChanged || tCount == 1 || oldOutputData.byAiCtrl1 != OutputData.byAiCtrl1)
-	{
-		printf("AICTRL1 %d\n", OutputData.byAiCtrl1);
-	}
+	printValueUint16("OUT_PWM0", oldOutputData.wPwm0, OutputData.wPwm0);
+	printValueUint16("OUT_PWM1", oldOutputData.wPwm1, OutputData.wPwm1);
 
-	if (!printOnlyChanged || tCount == 1 || oldOutputData.wPwm0 != OutputData.wPwm0)
-	{
-		printf("PWM0 %d\n", OutputData.wPwm0);
-	}
-	if (!printOnlyChanged || tCount == 1 || oldOutputData.wPwm1 != OutputData.wPwm1)
-	{
-		printf("PWM1 %d\n", OutputData.wPwm1);
-	}
+	printByteAndBits("OUT_GPIO", oldOutputData.byGpioOut, OutputData.byGpioOut, 4);
+	printByteAndBits("OUT_D", oldOutputData.byDigOut, OutputData.byDigOut, 6);
+	printByteAndBits("OUT_REL", oldOutputData.byRelayOut, OutputData.byRelayOut, 4);
+	printValueUint8("OUT_PWMCTRL0", oldOutputData.byPwm0Ctrl0, OutputData.byPwm0Ctrl0);
+	printValueUint8("OUT_PWMCTRL1", oldOutputData.byPwm0Ctrl1, OutputData.byPwm0Ctrl1);
+	printValueUint8("OUT_PWMCTRL2", oldOutputData.byPwm0Ctrl2, OutputData.byPwm0Ctrl2);
+	printValueUint8("OUT_GPIOCTRL", oldOutputData.byGpioCtrl, OutputData.byGpioCtrl);
+	printValueUint8("OUT_UCCTRL", oldOutputData.byUcCtrl, OutputData.byUcCtrl);
+	printValueUint8("OUT_PISTATUS", oldOutputData.byPiStatus, OutputData.byPiStatus);
+	printValueUint8("OUT_AUX0", oldOutputData.byAux0, OutputData.byAux0);
 
-	if (!printOnlyChanged || tCount == 1 || oldOutputData.byGpioOut != OutputData.byGpioOut)
-	{
-		printf("GPIOOB %d\n", OutputData.byGpioOut);
-		printf("GPIOO0 %d\n", BIT(OutputData.byGpioOut, 0));
-		printf("GPIOO1 %d\n", BIT(OutputData.byGpioOut, 1));
-		printf("GPIOO2 %d\n", BIT(OutputData.byGpioOut, 2));
-		printf("GPIOO3 %d\n", BIT(OutputData.byGpioOut, 3));
-	}
-
-	if (!printOnlyChanged || tCount == 1 || oldOutputData.byDigOut != OutputData.byDigOut)
-	{
-		printf("DOB %d\n", OutputData.byDigOut);
-		printf("DO0 %d\n", BIT(OutputData.byDigOut, 0));
-		printf("DO1 %d\n", BIT(OutputData.byDigOut, 1));
-		printf("DO2 %d\n", BIT(OutputData.byDigOut, 2));
-		printf("DO3 %d\n", BIT(OutputData.byDigOut, 3));
-		printf("DO4 %d\n", BIT(OutputData.byDigOut, 4));
-		printf("DO5 %d\n", BIT(OutputData.byDigOut, 5));
-	}
-	if (!printOnlyChanged || tCount == 1 || oldOutputData.byRelayOut != OutputData.byRelayOut)
-	{
-		printf("RELB %d\n", OutputData.byRelayOut);
-		printf("REL0 %d\n", BIT(OutputData.byRelayOut, 0));
-		printf("REL1 %d\n", BIT(OutputData.byRelayOut, 1));
-		printf("REL2 %d\n", BIT(OutputData.byRelayOut, 2));
-		printf("REL3 %d\n", BIT(OutputData.byRelayOut, 3));
-	}
-	//	printf("HEARTBEAT\n");
+	printValueUint8("OUT_AOUT0", oldOutputDataDAC.wAOut0, OutputDataDAC.wAOut0);
+	printValueUint8("OUT_AOUT1", oldOutputDataDAC.wAOut1, OutputDataDAC.wAOut1);
 
 	oldInputData = InputData;
 	oldOutputData = OutputData;
