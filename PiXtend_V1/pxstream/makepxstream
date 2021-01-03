@@ -1,0 +1,22 @@
+#!/bin/sh
+
+case $1 in
+	go)
+		echo "makepxstream: start making pxstream"
+		sudo rm -rf pxstream.o
+		echo "./pxstream.o deleted"
+		sudo gcc -Wall -o "pxstream" "pxstream.c" -lmenu -lform -lpanel -lncurses -lrt -lpixtend -lwiringPi
+		sudo chmod +x ./pxstream
+		echo "makepxstream: pxstream compiled and built"
+		echo "makepxstream: DONE!!"
+		;;
+	clean)
+		echo "makepxstream: cleaning files"
+		sudo rm -rf pxstream.o
+		echo "./pxstream deleted"
+		echo "makepxstream: DONE!!"
+		;;
+	*)
+		echo "makepxstream: Available Options are \"go\" and \"clean\""
+		;;
+esac
